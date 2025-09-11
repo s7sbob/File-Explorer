@@ -1,5 +1,6 @@
 import { findFolder } from '@/lib/data';
 import { CreateFolderButton } from '@/components/CreateFolderButton';
+import { CreateFileButton } from '@/components/CreateFileButton';
 import { FolderList } from '@/components/FolderList';
 
 interface Props {
@@ -17,9 +18,11 @@ export default function FolderPage({ params }: Props) {
     <div className="space-y-4">
       <div className="flex justify-between items-center">
         <h1 className="text-2xl font-bold">{folder.name}</h1>
-        <CreateFolderButton folderId={params.id} />
+        <div className="flex gap-2">
+          <CreateFolderButton folderId={params.id} />
+          <CreateFileButton folderId={params.id} />
+        </div>
       </div>
-      {/* TODO: allow creating files */}
       <FolderList nodes={folder.children} />
     </div>
   );

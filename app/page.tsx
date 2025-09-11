@@ -1,5 +1,6 @@
 import { findFolder } from '@/lib/data';
 import { CreateFolderButton } from '@/components/CreateFolderButton';
+import { CreateFileButton } from '@/components/CreateFileButton';
 import { FolderList } from '@/components/FolderList';
 
 export default function Home() {
@@ -13,7 +14,10 @@ export default function Home() {
     <div className="space-y-4">
       <div className="flex justify-between items-center">
         <h1 className="text-2xl font-bold">My Files</h1>
-        <CreateFolderButton folderId="root" />
+        <div className="flex gap-2">
+          <CreateFolderButton folderId="root" />
+          <CreateFileButton folderId="root" />
+        </div>
       </div>
       <FolderList nodes={folder.children} />
     </div>

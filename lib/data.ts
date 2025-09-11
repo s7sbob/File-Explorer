@@ -13,11 +13,11 @@ export type FolderNode = {
 
 export const root: FolderNode = {
   id: "root",
-  name: "root",
+  name: "My Files",
   type: "folder",
   children: [
-    { id: "folder-1", name: "Folder 1", type: "folder", children: [] },
-    { id: "folder-2", name: "Folder 2", type: "folder", children: [] },
+    { id: "folder-1", name: "Documents", type: "folder", children: [] },
+    { id: "folder-2", name: "Images", type: "folder", children: [] },
   ],
 };
 
@@ -32,5 +32,52 @@ export function findFolder(
       if (result) return result;
     }
   }
+  return null;
+}
+
+/**
+ * Find the path from root to the specified folder
+ * Returns an array of folder objects representing the breadcrumb path
+ */
+export function findFolderPath(
+  targetId: string,
+  current: FolderNode = root,
+  path: FolderNode[] = []
+): FolderNode[] | null {
+  const currentPath = [...path, current];
+  
+  if (current.id === targetId) {
+    return currentPath;
+  }
+  
+  for (const child of current.children) {
+    if (child.type === "folder") {
+      const result = findFolderPath(targetId, child, currentPath);
+      if (result) return result;
+    }
+  }
+  
+  return null;
+}
+
+/**
+ * Get the parent folder ID for a given folder
+ */
+export function getParentFolderId(
+  targetId: string,
+  current: FolderNode = root,
+  parentId: string | null = null
+): string | null {
+  if (current.id === targetId) {
+    return parentId;
+  }
+  
+  for (const child of current.children) {
+    if (child.type === "folder") {
+      const result = getParentFolderId(targetId, child, current.id);
+      if (result !== null) return result;
+    }
+  }
+  
   return null;
 }

@@ -37,6 +37,7 @@ export default function FolderPage({ params }: Props) {
             {folder.children.length} {folder.children.length === 1 ? 'item' : 'items'}
           </p>
         </div>
+        {/* ✅ المهم: التأكد من params.id */}
         <ActionButtons folderId={params.id} />
       </div>
       

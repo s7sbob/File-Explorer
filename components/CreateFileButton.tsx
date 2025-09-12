@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 
 interface CreateFileButtonProps {
   folderId: string;
@@ -12,14 +12,16 @@ export function CreateFileButton({ folderId }: CreateFileButtonProps) {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [customName, setCustomName] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const router = useRouter();
+  const pathname = usePathname();
 
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
       setSelectedFile(file);
-      // Pre-fill custom name with original filename
       setCustomName(file.name);
+      setError(null);
     }
   };
 
@@ -27,30 +29,46 @@ export function CreateFileButton({ folderId }: CreateFileButtonProps) {
     e.preventDefault();
     if (!selectedFile) return;
 
+    console.log('\n=== FILE UPLOAD DEBUG ===');
+    console.log('Current pathname:', pathname);
+    console.log('Folder ID:', folderId);
+    console.log('Selected file:', selectedFile.name);
+    console.log('API URL:', `/api/files/${folderId}`);
+
     setIsLoading(true);
+    setError(null);
+    
     try {
       const formData = new FormData();
       formData.append('file', selectedFile);
       
-      // Use custom name if provided, otherwise use original filename
       const fileName = customName.trim() || selectedFile.name;
       formData.append('name', fileName);
+
+      console.log('FormData contents:');
+      for (let [key, value] of formData.entries()) {
+        console.log(`${key}:`, value);
+      }
 
       const response = await fetch(`/api/files/${folderId}`, {
         method: 'POST',
         body: formData,
       });
 
+      const result = await response.json();
+      console.log('API Response:', result);
+
       if (response.ok) {
+        console.log('✅ Upload successful');
         router.refresh();
         handleClose();
       } else {
-        const error = await response.json();
-        console.error('Failed to upload file:', error.error);
-        // TODO: Show user-friendly error message
+        console.log('❌ Upload failed:', result);
+        setError(result.error || 'Failed to upload file');
       }
     } catch (error) {
-      console.error('Error uploading file:', error);
+      console.error('❌ Network error:', error);
+      setError('Network error occurred');
     } finally {
       setIsLoading(false);
     }
@@ -60,6 +78,7 @@ export function CreateFileButton({ folderId }: CreateFileButtonProps) {
     setOpen(false);
     setSelectedFile(null);
     setCustomName('');
+    setError(null);
   };
 
   const getFileSize = (bytes: number) => {
@@ -84,6 +103,20 @@ export function CreateFileButton({ folderId }: CreateFileButtonProps) {
         <div className="fixed inset-0 flex items-center justify-center bg-black/40 z-50">
           <form onSubmit={handleSubmit} className="bg-white p-6 rounded-lg shadow-lg min-w-96">
             <h3 className="text-lg font-semibold mb-4">Upload New File</h3>
+            
+            {/* Debug Info */}
+            <div className="mb-4 p-2 bg-blue-50 rounded text-xs text-blue-700">
+              <strong>Debug:</strong><br />
+              Folder ID: {folderId}<br />
+              Path: {pathname}
+            </div>
+            
+            {/* Error Display */}
+            {error && (
+              <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded text-red-700 text-sm">
+                {error}
+              </div>
+            )}
             
             {/* File Input */}
             <div className="mb-4">

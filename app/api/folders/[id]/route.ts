@@ -6,23 +6,23 @@ export async function POST(
   req: Request,
   { params }: { params: { id: string } }
 ) {
-  console.log('\n=== FOLDER CREATION API DEBUG ===');
-  console.log('Target parent folder ID:', params.id);
+  
+  
   
   try {
     const body = await req.json();
     const { name } = body;
     
     const parent = findFolder(params.id);
-    console.log('Parent folder found:', parent ? `${parent.name} (${parent.id})` : 'null');
+    
     
     if (!parent) {
-      console.log('❌ ERROR: Parent folder not found');
+      
       return NextResponse.json({ error: 'Parent folder not found' }, { status: 404 });
     }
     
     if (typeof name !== 'string' || !name.trim()) {
-      console.log('❌ ERROR: Invalid folder name');
+      
       return NextResponse.json({ error: 'Invalid folder name' }, { status: 400 });
     }
     
@@ -34,13 +34,13 @@ export async function POST(
       children: [],
     };
     
-    console.log('New folder created:', newFolder);
+    
     
     // **🔑 Add to singleton store**
     parent.children.push(newFolder);
     
-    console.log('✅ Folder created successfully');
-    console.log('Parent children count:', parent.children.length);
+    
+    
     
     // Save to persistent storage
     saveToStorage();
@@ -56,7 +56,7 @@ export async function POST(
     });
     
   } catch (error) {
-    console.log('❌ ERROR in folder creation:', error);
+    
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }

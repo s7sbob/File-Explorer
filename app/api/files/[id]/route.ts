@@ -45,21 +45,21 @@ export async function POST(
   req: Request,
   { params }: { params: { id: string } }
 ) {
-  console.log('\n=== FILE UPLOAD API DEBUG ===');
-  console.log('Folder ID from params:', params.id);
+  
+  
   
   const formData = await req.formData();
   const file = formData.get('file') as File | null;
   const providedName = formData.get('name')?.toString();
   
-  console.log('File received:', file ? file.name : 'null');
-  console.log('Provided name:', providedName);
+  
+  
   
   const parent = findFolder(params.id);
-  console.log('Parent folder found:', parent ? `${parent.name} (${parent.id})` : 'null');
+  
   
   if (!parent || !file) {
-    console.log('❌ ERROR: Missing parent or file');
+    
     return NextResponse.json({ 
       error: 'Invalid request: missing parent or file',
       debug: {
@@ -88,15 +88,15 @@ export async function POST(
     const uniqueFileName = await generateUniqueFilename(publicDir, safeName);
     const filePath = join(publicDir, uniqueFileName);
     
-    console.log('Original filename:', safeName);
-    console.log('Unique filename:', uniqueFileName);
-    console.log('File path:', filePath);
+    
+    
+    
     
     // Save file with unique name
     const bytes = await file.arrayBuffer();
     await writeFile(filePath, Buffer.from(bytes));
     
-    console.log('✅ File saved successfully');
+    
     
   } catch (err: any) {
     console.error('❌ Failed to save file:', err);
@@ -117,7 +117,7 @@ export async function POST(
     counter++;
   }
   
-  console.log('Display name in folder:', finalDisplayName);
+  
 
   // Update singleton store with display name
   parent.children.push({
@@ -135,8 +135,8 @@ export async function POST(
     fileType: getFileExtension(finalDisplayName)
   });
   
-  console.log('✅ File uploaded successfully');
-  console.log('Parent children count:', parent.children.length);
+  
+  
   
   // Save to persistent storage
   saveToStorage();

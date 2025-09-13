@@ -29,11 +29,11 @@ export function CreateFileButton({ folderId }: CreateFileButtonProps) {
     e.preventDefault();
     if (!selectedFile) return;
 
-    console.log('\n=== FILE UPLOAD DEBUG ===');
-    console.log('Current pathname:', pathname);
-    console.log('Folder ID:', folderId);
-    console.log('Selected file:', selectedFile.name);
-    console.log('API URL:', `/api/files/${folderId}`);
+    
+    
+    
+    
+    
 
     setIsLoading(true);
     setError(null);
@@ -45,9 +45,9 @@ export function CreateFileButton({ folderId }: CreateFileButtonProps) {
       const fileName = customName.trim() || selectedFile.name;
       formData.append('name', fileName);
 
-      console.log('FormData contents:');
+      
       for (let [key, value] of formData.entries()) {
-        console.log(`${key}:`, value);
+        
       }
 
       const response = await fetch(`/api/files/${folderId}`, {
@@ -56,14 +56,14 @@ export function CreateFileButton({ folderId }: CreateFileButtonProps) {
       });
 
       const result = await response.json();
-      console.log('API Response:', result);
+      
 
       if (response.ok) {
-        console.log('✅ Upload successful');
+        
         router.refresh();
         handleClose();
       } else {
-        console.log('❌ Upload failed:', result);
+        
         setError(result.error || 'Failed to upload file');
       }
     } catch (error) {

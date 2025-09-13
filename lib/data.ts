@@ -45,7 +45,7 @@ if (typeof globalThis !== 'undefined') {
 
 // Initialize singleton store
 if (!globalForStorage.__FILE_EXPLORER_SINGLETON__) {
-  console.log('🚀 Initializing singleton file explorer store...');
+  
   
   const defaultRoot: FolderNode = {
     id: "root",
@@ -72,7 +72,7 @@ if (!globalForStorage.__FILE_EXPLORER_SINGLETON__) {
           uploadedAt: new Date(file.uploadedAt)
         }));
       }
-      console.log('✅ Loaded data from storage file');
+      
     }
   } catch (error) {
     console.error('❌ Failed to load storage file:', error);
@@ -101,7 +101,7 @@ export function saveToStorage() {
     };
     
     writeFileSync(STORAGE_FILE, JSON.stringify(data, null, 2));
-    console.log('💾 Data saved to storage file');
+    
   } catch (error) {
     console.error('❌ Failed to save data:', error);
   }
